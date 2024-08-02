@@ -1,24 +1,34 @@
 FROM	debian:buster
 
-RUN		apt-get update && apt upgrade -y && \
-		apt-get install -y wget gnupg2 lsb-release apt-transport-https \
-		ca-certificates php7.3 php7.3-fpm php7.3-mysql mariadb-client && \
-		apt-get clean && rm -rf /var/lib/apt/lists/*
+# Update and install necessary dependencies
+RUN		apt-get update && apt upgrade -y \
+		&& apt-get install -y wget curl bash \
+		php php-cgi php-mysql php-fpm php-pdo php-gd php-cli php-mbstring \
+		&& rm -rf /var/lib/apt/lists/*
 
-RUN		wget https://wordpress.org/wordpress-5.8-en_US.tar.gz -P /var/www && \
-		cd /var/www && \
-		tar -xzf wordpress-5.8-en_US.tar.gz && \
-		rm wordpress-5.8-en_US.tar.gz && \
-		chown -R www-data:www-data /var/www/wordpress
+# Download and configure WP-CLI
+RUN		wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+		&& chmod +x wp-cli.phar \
+		&& mv wp-cli.phar /usr/local/bin/wp
 
-RUN		wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
-		chmod +x wp-cli.phar && \
-		mv wp-cli.phar /usr/local/bin/wp
+# Copy custom PHP configuration 	WATCH VERISON!!!
+COPY	conf/www.conf				/etc/php/7.3/fpm/pool.d/www.conf
 
-COPY	conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
-COPY	conf/auto_config.sh /conf/auto_config.sh
+# Create the necessary directory for PHP-FPM
+RUN		mkdir /run/php
 
-RUN		chmod +x /conf/auto_config.sh
-RUN		/conf/auto_config.sh
+# Copy the WordPress creation script and give it execute permissions
+COPY	./tools/config_wordpress.sh	/usr/local/bin/
+RUN		chmod +x /usr/local/bin/config_wordpress.sh
 
-CMD ["php-fpm7.3", "-F"]
+# Set the working directory
+WORKDIR	/var/www/html/
+
+# Expose the required port
+EXPOSE	9000
+
+# Set the entry point to run the script and then start PHP-FPM
+ENTRYPOINT	["/usr/local/bin/config_wordpress.sh"]
+
+# Start PHP-FPM in foreground	WATCH VERISON!!!
+CMD			["php-fpm7.3", "-F"]

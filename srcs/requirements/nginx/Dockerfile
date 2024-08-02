@@ -1,13 +1,19 @@
 FROM	debian:buster
 
+# doUpdate and install nginx + utilities program
 RUN		apt update -y && apt upgrade -y && \
 		apt install -y nginx vim curl openssl && \
-		mkdir -p /etc/nginx/ssl /var/run/nginx && \
-		openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=login.42.fr/UID=login"
+		mkdir -p /etc/nginx/ssl /run/nginx && \
+		openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
+			-out /etc/nginx/ssl/gmacias-.crt \
+			-keyout /etc/nginx/ssl/gmacias-.key \
+			-subj "/C=FR/ST=Paris/L=Paris/O=42/OU=gmacias-/CN=gmacias-/"
 
-RUN 	chmod 755 /var/www/html && \
-		chown -R www-data:www-data /var/www/html
+# Clone my conf/ into docker nginx
+COPY	./conf/nginx.conf /etc/nginx/conf.d
 
-COPY	conf/nginx.conf /etc/nginx/nginx.conf
+# The only port allowed
+EXPOSE	443
 
+# Start nginx
 CMD		["nginx", "-g", "daemon off;"]
