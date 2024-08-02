@@ -1,6 +1,6 @@
 FROM	debian:buster
 
-# doUpdate and install nginx + utilities program
+# Update and install nginx + utilities program
 RUN		apt update -y && apt upgrade -y && \
 		apt install -y nginx vim curl openssl && \
 		mkdir -p /etc/nginx/ssl /run/nginx && \
