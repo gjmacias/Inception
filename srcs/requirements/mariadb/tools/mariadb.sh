@@ -34,7 +34,7 @@ EOSQL
 EOSQL
 
 # !!! Import WordPress Database !!!
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE < /usr/local/bin/wordpress.sql
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE < /usr/local/bin/my_wordpress.sql
 fi
 
 # Stop MySQL server

@@ -14,6 +14,7 @@ EXPOSE	3306
 
 # Copy necessary scripts and configuration files
 COPY	./tools/mariadb.sh		/usr/local/bin/
+COPY	./conf/my_wordpress.sql	/usr/local/bin/
 COPY	./conf/mysqld.cnf		/etc/mysql/mariadb.conf.d/
 
 # Ensure that scripts have the necessary execution permissions
