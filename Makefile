@@ -1,5 +1,5 @@
 all: set_host
-	@ mkdir -p /home/gmacias-data/mariadb
+	@ mkdir -p /home/gmacias-/data/mariadb
 	@ mkdir -p /home/gmacias-/data/wordpress
 	
 	@docker compose -f ./srcs/docker-compose.yml up -d --build
