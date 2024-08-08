@@ -1,4 +1,4 @@
-FROM	debian:buster
+FROM	debian:bullseye
 
 # Update and install necessary dependencies
 RUN		apt-get update && apt upgrade -y \

@@ -1,6 +1,6 @@
 all: set_host
-	@ mkdir -p /home/gmacias-/data/mariadb
-	@ mkdir -p /home/gmacias-/data/wordpress
+	@ sudo mkdir -p /home/gmacias-/data/mariadb
+	@ sudo mkdir -p /home/gmacias-/data/wordpress
 	
 	@docker compose -f ./srcs/docker-compose.yml up -d --build
 
@@ -24,10 +24,10 @@ clean: down remove_host
 	@docker volume rm srcs_mariadb_data srcs_wordpress_data
 
 vclean: 
-	@ rm -rf /home/gmacias-/data/mariadb
-	@ rm -rf /home/gmacias-/data/wordpress
+	@ sudo rm -rf /home/gmacias-/data/mariadb
+	@ sudo rm -rf /home/gmacias-/data/wordpress
 	@if [ -z "$(ls -A /mnt/c/Users/GG/Desktop/data)" ]; then \
-		rm -rf /home/gmacias-/data; \
+		sudo rm -rf /home/gmacias-/data; \
 	fi
 
 fclean: clean vclean

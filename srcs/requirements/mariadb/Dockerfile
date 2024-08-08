@@ -1,4 +1,4 @@
-FROM	debian:buster
+FROM	debian:bullseye
 
 # Install required packages and clean up package lists
 RUN		apt-get update && apt-get upgrade -y \
