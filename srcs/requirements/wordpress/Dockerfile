@@ -12,7 +12,7 @@ RUN		wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.p
 		&& mv wp-cli.phar /usr/local/bin/wp
 
 # Copy custom PHP configuration 	WATCH VERISON!!!
-COPY	conf/www.conf				/etc/php/7.3/fpm/pool.d/www.conf
+COPY	conf/www.conf				/etc/php/7.4/fpm/pool.d/www.conf
 
 # Create the necessary directory for PHP-FPM
 RUN		mkdir /run/php
@@ -31,4 +31,4 @@ EXPOSE	9000
 ENTRYPOINT	["/usr/local/bin/config_wordpress.sh"]
 
 # Start PHP-FPM in foreground	WATCH VERISON!!!
-CMD			["php-fpm7.3", "-F"]
+CMD			["php-fpm7.4", "-F"]
