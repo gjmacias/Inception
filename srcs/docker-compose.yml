@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   mariadb:
     container_name: mariadb    
@@ -39,14 +37,14 @@ volumes:
     driver:         local
     driver_opts:
       type:         none
-      device:       /mnt/c/Users/GG/Desktop/data/wordpress
+      device:       /home/gmacias-/data/wordpress
       o:            bind
 
   mariadb_data:
     driver:         local
     driver_opts:
       type:         none
-      device:       /mnt/c/Users/GG/Desktop/data/mariadb
+      device:       /home/gmacias-/data/mariadb
       o:            bind
 
 networks:
