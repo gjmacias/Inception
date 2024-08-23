@@ -158,27 +158,87 @@ networks:
       com.docker.network.bridge.name: my_custom_bridge
 ```
 
+Claro, vamos a detallar cómo funcionan los volúmenes en Docker y explicar cada parámetro utilizando el ejemplo proporcionado. Aquí tienes una explicación más clara y detallada sobre los volúmenes en Docker:
+
+---
+
 ## Volúmenes en Docker
 
-Los volúmenes son una forma de persistir datos generados y utilizados por contenedores. Aquí está cómo funcionan:
+Un volumen es una parte del sistema de archivos que se monta en uno o más contenedores. Los volúmenes permiten que los datos generados por los contenedores persistan más allá de la vida útil del contenedor y facilitan la gestión y el intercambio de datos.
 
-- **Persistencia de datos**: Los volúmenes permiten que los datos sobrevivan a la eliminación del contenedor.
-- **Facilidad de uso**: Los volúmenes se montan en directorios específicos del contenedor, facilitando la gestión de datos.
+### Ejemplo de Configuración de Volúmenes en `docker-compose.yml`
 
-Ejemplo de un archivo `docker-compose.yml` con volúmenes:
+En un archivo `docker-compose.yml`, puedes definir volúmenes para los servicios de la siguiente manera:
+
 ```yaml
 version: '3'
 services:
-  web:
-    image: nginx
+  wordpress:
+    image: wordpress
     volumes:
-      - ./data:/usr/share/nginx/html
+      - wordpress_data:/var/www/html
+
+  mariadb:
+    image: mariadb
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/gmacias-/data/wordpress
+      o: bind
+
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/gmacias-/data/mariadb
+      o: bind
 ```
 
-Aquí, el directorio `./data` en el host se monta en `/usr/share/nginx/html` dentro del contenedor.
+### Explicación de Parámetros
 
-## Conclusión
+1. **`wordpress_data` y `mariadb_data`**:
+   - Estos son los nombres de los volúmenes definidos en la sección `volumes` del archivo `docker-compose.yml`. Los nombres se utilizan para referirse a estos volúmenes en los servicios.
 
+2. **`driver: local`**:
+   - Especifica el tipo de driver que Docker utiliza para gestionar el volumen. `local` es el controlador predeterminado que se utiliza para almacenar datos en el sistema de archivos local del host.
+
+3. **`driver_opts`**:
+   - Permite especificar opciones adicionales para el driver del volumen.
+
+   - **`type: none`**:
+     - Indica que no se utiliza un tipo de sistema de archivos específico. Esto es útil cuando se desea usar un directorio existente en el host como volumen.
+
+   - **`device: /home/gmacias-/data/wordpress`** y **`device: /home/gmacias-/data/mariadb`**:
+     - Especifica la ruta en el sistema de archivos del host que se utilizará para el volumen. Estos directorios se montan dentro de los contenedores en las rutas correspondientes (`/var/www/html` para WordPress y `/var/lib/mysql` para MariaDB).
+
+   - **`o: bind`**:
+     - Indica que el volumen debe estar vinculado a una ubicación específica en el sistema de archivos del host. Utiliza la opción de montaje `bind` para montar un directorio específico del host en el contenedor.
+
+### Uso de Volúmenes
+
+- **Persistencia de Datos**: Los datos almacenados en volúmenes persisten incluso si el contenedor se elimina. Esto es crucial para mantener bases de datos y otros archivos importantes.
+- **Facilidad de Gestión**: Los volúmenes permiten que los datos sean fácilmente gestionables y accesibles desde el host, lo que facilita las copias de seguridad y la migración de datos.
+- **Compartición entre Contenedores**: Los volúmenes pueden ser compartidos entre múltiples contenedores, permitiendo que diferentes servicios accedan a los mismos datos.
+
+## Documentación de Contenedores Específicos
+
+Para obtener detalles específicos sobre la configuración y el uso de cada contenedor incluido en este proyecto, consulta los siguientes archivos README:
+
+- **MariaDB**: [README para MariaDB](https://github.com/gjmacias/Inception/tree/main/srcs/requirements/mariadb)
+  - Detalles sobre la configuración de MariaDB, incluyendo la inicialización de la base de datos y la integración con aplicaciones como WordPress.
+
+- **WordPress**: [README para WordPress](https://github.com/gjmacias/Inception/tree/main/srcs/requirements/wordpress)
+  - Información sobre la configuración de WordPress, la instalación automática, y la integración con la base de datos.
+
+- **Nginx**: [README para Nginx](https://github.com/gjmacias/Inception/tree/main/srcs/requirements/nginx)
+  - Explicación sobre la configuración de Nginx para servir contenido a través de HTTPS y su integración con PHP-FPM.
+
+Estos documentos proporcionan instrucciones detalladas sobre cómo cada contenedor está configurado y cómo se deben utilizar dentro del entorno general de la aplicación. Asegúrate de revisarlos para una comprensión completa del entorno y de cómo interactúan los diferentes componentes.
 
 # Quizás pueda interesarte!
 
